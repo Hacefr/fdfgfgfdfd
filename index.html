@@ -10,33 +10,22 @@
     <!-- IN-SITE NOTIFICATION BANNER CONTAINER -->
     <div id="toast-container"></div>
 
-    <!-- INTERACTIVE GAME LOADING BACKDROP OVERLAY -->
+    <!-- LOADING SCREEN OVERLAY -->
     <div id="loading-screen" class="loading-overlay">
         <div class="loading-box">
-            <!-- Animated Graphic Title -->
-            <h1 class="menu-title animate-pulse">
-                <span class="title-tile correct">M</span>
-                <span class="title-tile present">O</span>
-                <span class="title-tile absent">R</span>
-                <span class="title-tile correct">D</span>
-                <span class="title-tile present">L</span>
-                <span class="title-tile absent">E</span>
-            </h1>
-            <p class="loading-status-text">Verifying game assets...</p>
+            <h2 class="loading-title">LOADING MORDLE</h2>
+            <div class="progress-container">
+                <div id="progress-fill" class="progress-bar"></div>
+            </div>
+            <div id="percent-text" class="progress-percentage">0%</div>
             
-            <!-- Dynamic Progress Meter Components -->
-            <div class="progress-bar-container">
-                <div id="progress-fill" class="progress-bar-fill"></div>
-            </div>
-            <div id="percent-text" class="loading-percent-label">0%</div>
-
-            <!-- Dynamic Interactive Tip Banner -->
-            <div class="tips-box">
-                <span class="tip-header">💡 PRO TIP:</span>
-                <p id="loading-tip" class="tip-body-content">Fetching system advice...</p>
+            <!-- INTERACTIVE TIP COMPONENT -->
+            <div class="tip-box">
+                <span class="tip-label">TIP:</span>
+                <p id="loading-tip" class="tip-content">Preparing your custom dictionaries...</p>
             </div>
 
-            <!-- Emergency System Bypass Button -->
+            <!-- SAFETY EMERGENCY OVERRIDE BUTTON -->
             <button id="btn-skip-loading" class="skip-loading-btn">Stuck? Skip Loading</button>
         </div>
     </div>
@@ -62,8 +51,10 @@
             <button class="menu-btn" id="btn-settings">Settings</button>
         </div>
 
-        <!-- System Version Status Indicator Footnote Anchor -->
-        <div id="version-footer" class="version-footnote">● System: Verifying...</div>
+        <!-- LIVE GAME INTEGRITY ANCHOR INFOBAR -->
+        <div id="integrity-infobar" class="integrity-banner status-checking">
+            <span class="status-dot"></span> <span id="integrity-text">Checking system updates...</span>
+        </div>
     </div>
 
     <!-- STATS MODAL/SCREEN -->
@@ -88,7 +79,7 @@
         <button class="menu-btn back-btn">Main Menu</button>
     </div>
 
-    <!-- MODDED SCREEN INTERFACE CONTAINER -->
+    <!-- MODDED PLACEHOLDER SCREEN -->
     <div id="modded-screen" class="menu-container hidden">
         <h2>MODDED MODES</h2>
         <p style="color: #818384; margin: 15px 0 30px 0;">Exciting custom rules and hazards coming soon!</p>
@@ -149,6 +140,9 @@
     <!-- Modular Script Architecture Elements -->
     <script type="module" src="words.js"></script>
     <script type="module" src="stats.js"></script>
+    <script type="module" src="checker.js"></script>
+    <script type="module" src="tips.js"></script>
+    <script type="module" src="board.js"></script>
     <script type="module" src="script.js"></script>
 </body>
 </html>
