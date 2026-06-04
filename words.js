@@ -19,7 +19,6 @@ export async function fetchWordList() {
         if (wordList.length === 0) throw new Error('words.txt is empty');
     } catch (error) {
         console.error('Error fetching local words:', error);
-        // Resilient hardcoded fallback list if the text file fails to load
         wordList = ["apple", "house", "train", "plant", "cyber", "robot", "laser"];
     }
 }
