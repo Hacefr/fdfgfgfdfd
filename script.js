@@ -1,7 +1,6 @@
 import { fetchWordList, getTargetWord, isValidWord, wordList } from './words.js';
 import { loadStats, saveStats, resetStats } from './stats.js';
 import { checkGameVersion } from './checker.js';
-import { getRandomTip } from './tips.js';
 import { initBoard, updateGrid } from './board.js';
 
 const WORD_LENGTH = 5;
@@ -13,10 +12,6 @@ let isGameOver = false;
 let gameMode = 'random'; 
 
 // DOM Screen Elements
-const screenLoading = document.getElementById('loading-screen');
-const progressFill = document.getElementById('progress-fill');
-const percentText = document.getElementById('percent-text');
-const loadingTipText = document.getElementById('loading-tip');
 const screenMenu = document.getElementById('main-menu');
 const screenGame = document.getElementById('active-game');
 const screenStats = document.getElementById('stats-screen');
@@ -26,52 +21,18 @@ const boardContainer = document.getElementById('board-container');
 const gameModeTitle = document.getElementById('game-mode-title');
 const toastContainer = document.getElementById('toast-container');
 
-// Initialize Orchestration Loop with Loading Progress Sequence
+// Launch Application Instantly
 async function initApp() {
     loadStats();
     setupMenuEvents();
     
-    if (loadingTipText) loadingTipText.textContent = getRandomTip();
-    
-    const tipInterval = setInterval(() => {
-        if (loadingTipText && !screenLoading.classList.contains('hidden')) {
-            loadingTipText.textContent = getRandomTip();
-        } else {
-            clearInterval(tipInterval);
-        }
-    }, 2500);
-
+    // Background execution operations run smoothly without blocking inputs
     try {
-        updateLoadingProgress(15);
-        await new Promise(r => setTimeout(r, 400));
-        
-        updateLoadingProgress(45);
-        await checkGameVersion();
-        await new Promise(r => setTimeout(r, 400));
-        
-        updateLoadingProgress(75);
         await fetchWordList();
-        await new Promise(r => setTimeout(r, 400));
-        
-        updateLoadingProgress(100);
-        await new Promise(r => setTimeout(r, 300));
-        
-        bypassLoadingScreen();
-    } catch (error) {
-        console.error("Initialization failed:", error);
-        showToast("Loading encounter anomaly. Skipping safely...", "error");
-        bypassLoadingScreen();
+        await checkGameVersion();
+    } catch (e) {
+        console.error("Silent asset setup encounter error:", e);
     }
-}
-
-function updateLoadingProgress(percentage) {
-    if (progressFill) progressFill.style.width = `${percentage}%`;
-    if (percentText) percentText.textContent = `${percentage}%`;
-}
-
-function bypassLoadingScreen() {
-    if (screenLoading) screenLoading.classList.add('hidden');
-    showScreen(screenMenu);
 }
 
 export function showToast(message, type = 'normal') {
@@ -95,10 +56,10 @@ function setupMenuEvents() {
     document.getElementById('btn-daily')?.addEventListener('click', () => startNewGame('daily'));
     document.getElementById('btn-stats')?.addEventListener('click', () => showScreen(screenStats));
     document.getElementById('btn-settings')?.addEventListener('click', () => showScreen(screenSettings));
-    document.getElementById('btn-modded')?.addEventListener('click', () => showScreen(screenModded));
-    document.getElementById('btn-skip-loading')?.addEventListener('click', () => {
-        showToast("Forcing manual boot sequence...", "normal");
-        bypassLoadingScreen();
+    
+    // Play Modded now links to your upcoming sub-folder game structure safely
+    document.getElementById('btn-modded')?.addEventListener('click', () => {
+        window.location.href = './chaos-mode/chaos.html';
     });
     
     document.querySelectorAll('.back-btn').forEach(btn => {
