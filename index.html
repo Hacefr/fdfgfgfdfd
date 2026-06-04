@@ -26,7 +26,7 @@
         <div class="menu-buttons">
             <button class="menu-btn" id="btn-daily">Play Daily</button>
             <button class="menu-btn" id="btn-random">Play Random</button>
-            <button class="menu-btn disabled" id="btn-modded">Play Modded <span class="badge">Locked</span></button>
+            <button class="menu-btn" id="btn-modded">Play Modded</button>
             <button class="menu-btn" id="btn-stats">Stats</button>
             <button class="menu-btn" id="btn-settings">Settings</button>
         </div>
@@ -57,7 +57,11 @@
     <!-- MODDED PLACEHOLDER SCREEN -->
     <div id="modded-screen" class="menu-container hidden">
         <h2>MODDED MODES</h2>
-        <p>Exciting custom rules and hazards coming soon!</p>
+        <p style="color: #818384; margin-bottom: 25px;">Select your custom rule modifier:</p>
+        <div class="menu-buttons">
+            <button class="menu-btn" id="btn-mod-hardcore">Hardcore Mode (4 Guesses)</button>
+            <button class="menu-btn" id="btn-mod-suddendeath">Sudden Death (1 Guess)</button>
+        </div>
         <button class="menu-btn back-btn">Main Menu</button>
     </div>
 
@@ -115,6 +119,7 @@
     <!-- Modular Script Architecture Elements -->
     <script type="module" src="words.js"></script>
     <script type="module" src="stats.js"></script>
+    <script type="module" src="gamemodes.js"></script>
     <script type="module" src="script.js"></script>
 </body>
 </html>
