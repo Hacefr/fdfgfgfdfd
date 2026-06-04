@@ -178,14 +178,12 @@ header h1 {
 }
 
 .menu-btn.disabled {
-    opacity: 0.35;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
 .badge {
-    background-color: #3a3a3a;
-    color: #818384;
-    border: 1px solid #555;
+    background-color: #b59f3b;
     font-size: 0.7rem;
     padding: 2px 6px;
     border-radius: 4px;
@@ -268,88 +266,6 @@ header {
 #btn-home:hover { background-color: #222; color: #fff; }
 .header-left, .header-right { width: 80px; }
 
-/* Persistent Low-Opacity Status Footer */
-.system-footer-text {
-    margin-top: 40px;
-    font-size: 0.82rem;
-    color: #6a6a6a;
-    letter-spacing: 0.5px;
-}
-
-/* --- LOADING SPLASH SCREEN INTERFACE --- */
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #0c0c0c;
-    z-index: 2000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.3s;
-}
-
-.loading-content {
-    width: 90%;
-    max-width: 400px;
-}
-
-.loading-logo {
-    font-size: 3.2rem;
-    font-weight: 900;
-    letter-spacing: 6px;
-    color: #ffffff;
-    margin-bottom: 10px;
-}
-
-.loading-status-text {
-    color: #818384;
-    font-size: 0.95rem;
-    margin-bottom: 25px;
-    min-height: 1.2rem;
-}
-
-.progress-bar-container {
-    width: 100%;
-    height: 6px;
-    background-color: #222;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 8px;
-}
-
-.progress-bar-fill {
-    width: 0%;
-    height: 100%;
-    background-color: #538d4e;
-    border-radius: 10px;
-    transition: width 0.1s linear;
-}
-
-.loading-pct-text {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #ffffff;
-    margin-bottom: 30px;
-}
-
-.loading-tip-box {
-    background-color: #161616;
-    border: 1px solid #222;
-    border-radius: 6px;
-    padding: 16px;
-    font-size: 0.88rem;
-    line-height: 1.4;
-    color: #b59f3b;
-    min-height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 /* --- IN-SITE NOTIFICATION SYSTEM (TOAST) --- */
 #toast-container {
     position: fixed;
@@ -383,3 +299,121 @@ header {
 
 @keyframes fadeInToast { to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeOutToast { to { opacity: 0; transform: translateY(-10px); } }
+
+/* --- FULL PAGE GAME LOADING SCREEN STYLING --- */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #0c0c0c;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 360px;
+    text-align: center;
+}
+
+.loading-status-text {
+    font-size: 1.1rem;
+    color: #e1e1e1;
+    margin-bottom: 20px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background-color: #252525;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    border: 1px solid #333;
+}
+
+.progress-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #b59f3b, #538d4e);
+    border-radius: 10px;
+    transition: width 0.3s ease-out;
+}
+
+.loading-percent-label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #818384;
+    margin-bottom: 35px;
+}
+
+/* Loading Tips Panel Layout */
+.tips-box {
+    background-color: #161616;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    padding: 15px;
+    width: 100%;
+    min-height: 85px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.tip-header {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #b59f3b;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.tip-body-content {
+    font-size: 0.88rem;
+    color: #aaa;
+    line-height: 1.4;
+}
+
+/* Emergency Loading Bypass Layout */
+.skip-loading-btn {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 5px 10px;
+}
+
+.skip-loading-btn:hover {
+    color: #818384;
+}
+
+/* Integrity Footer Text Styling */
+.version-footnote {
+    font-size: 0.78rem;
+    font-weight: bold;
+    color: #444;
+    margin-top: 30px;
+    letter-spacing: 0.5px;
+}
+
+.version-footnote.up-to-date { color: #3b6d37; }
+.version-footnote.outdated { color: #ba3c3c; animation: flashWarning 1.5s infinite alternate; }
+
+@keyframes flashWarning { 0% { opacity: 0.5; } 100% { opacity: 1; } }
+@keyframes pulse { 50% { opacity: 0.7; } }
+.animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
