@@ -1,16 +1,25 @@
-const WORD_LIST_URL = 'https://githubusercontent.com';
+const WORD_LIST_FILE = './words.txt';
 
 export let wordList = [];
 
-// Fetch Master Wordlist safely from remote source
+// Fetch Master Wordlist safely from local repository file tree
 export async function fetchWordList() {
     try {
-        const response = await fetch(WORD_LIST_URL);
-        if (!response.ok) throw new Error('Network error parsing repository');
-        wordList = await response.json();
+        const response = await fetch(WORD_LIST_FILE);
+        if (!response.ok) throw new Error('Could not find local words.txt file');
+        
+        const rawText = await response.text();
+        
+        // Split by lines, remove whitespace, and filter out empty rows
+        wordList = rawText
+            .split('\n')
+            .map(word => word.trim().toLowerCase())
+            .filter(word => word.length === 5);
+
+        if (wordList.length === 0) throw new Error('words.txt is empty');
     } catch (error) {
-        console.error('Error fetching words:', error);
-        // Resilient hardcoded fallback list
+        console.error('Error fetching local words:', error);
+        // Resilient hardcoded fallback list if the text file fails to load
         wordList = ["apple", "house", "train", "plant", "cyber", "robot", "laser"];
     }
 }
