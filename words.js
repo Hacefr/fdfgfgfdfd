@@ -2,7 +2,6 @@ const WORD_LIST_FILE = './words.txt';
 
 export let wordList = [];
 
-// Fetch Master Wordlist safely from local repository file tree
 export async function fetchWordList() {
     try {
         const response = await fetch(WORD_LIST_FILE);
@@ -10,7 +9,6 @@ export async function fetchWordList() {
         
         const rawText = await response.text();
         
-        // Split by lines, remove whitespace, and filter out empty rows
         wordList = rawText
             .split('\n')
             .map(word => word.trim().toLowerCase())
@@ -23,12 +21,10 @@ export async function fetchWordList() {
     }
 }
 
-// Validation logic verifying word dictionary inclusion
 export function isValidWord(guessString) {
     return wordList.map(w => w.toUpperCase()).includes(guessString.toUpperCase());
 }
 
-// Logic routing to return target text solutions matching designated paths
 export function getTargetWord(mode) {
     if (wordList.length === 0) return '';
 
@@ -36,8 +32,4 @@ export function getTargetWord(mode) {
         const today = new Date();
         const seedValue = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
         let pseudoRandomIdx = Math.floor(Math.abs(Math.sin(seedValue) * wordList.length));
-        return wordList[pseudoRandomIdx].toUpperCase();
-    } else {
-        return wordList[Math.floor(Math.random() * wordList.length)].toUpperCase();
-    }
-}
+        
