@@ -27,7 +27,7 @@ body {
 }
 
 header h1 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: 700;
 }
 
@@ -58,7 +58,6 @@ header h1 {
     text-transform: uppercase;
     background-color: #121212;
     aspect-ratio: 1 / 1;
-    transition: background-color 0.3s elements, transform 0.1s ease;
 }
 
 /* Tile States */
@@ -66,7 +65,6 @@ header h1 {
 .tile.present { background-color: #b59f3b; border-color: #b59f3b; }
 .tile.absent { background-color: #3a3a3a; border-color: #3a3a3a; }
 .tile.filled { border-color: #565758; }
-.tile.exploded { background-color: #8b0000 !important; border-color: #ff0000 !important; color: #ffcccc !important; content: "💥"; }
 
 #keyboard-container {
     width: 100%;
@@ -93,17 +91,17 @@ header h1 {
     cursor: pointer;
     flex: 1;
     max-width: 50px;
-    user-select: none;
 }
 
-.key.key-wide { flex: 1.5; max-width: 80px; }
+.key.key-wide { flex: 1.5; }
 .key.correct { background-color: #538d4e; }
 .key.present { background-color: #b59f3b; }
 .key.absent { background-color: #3a3a3a; }
-.key.mined-detonated { background-color: #ff3333 !important; animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both; }
 
 /* Utility Classes */
-.hidden { display: none !important; }
+.hidden {
+    display: none !important;
+}
 
 /* Menu Containers */
 .menu-container {
@@ -156,46 +154,26 @@ header h1 {
     gap: 10px;
 }
 
-.menu-btn:hover {
+.menu-btn:hover:not(.disabled) {
     background-color: #3a3a3a;
     border-color: #538d4e;
     transform: translateY(-2px);
 }
 
-/* Mod Component Layouts */
-#mod-status-bar {
-    width: 100%;
-    max-width: 350px;
-    background-color: #1e1e1e;
-    border: 1px solid #3a3a3a;
-    border-radius: 6px;
-    padding: 10px;
-    margin-bottom: 5px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 0.95rem;
+.menu-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
-#timer-display { color: #ffcc00; }
-#mines-display { color: #ff3333; }
-
-.hp-bar-container {
-    width: 100%;
-    height: 10px;
-    background-color: #333;
-    border-radius: 5px;
-    margin-top: 5px;
-    overflow: hidden;
+.badge {
+    background-color: #b59f3b;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
 }
 
-#hp-bar-fill {
-    width: 100%;
-    height: 100%;
-    background-color: #ff3366;
-    transition: width 0.3s ease;
-}
-
-/* Stats Screen Components */
+/* Stats Layout */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -224,7 +202,7 @@ header h1 {
     margin-top: 5px;
 }
 
-/* Settings Options Layout */
+/* Settings Styles */
 .setting-row {
     display: flex;
     justify-content: space-between;
@@ -232,33 +210,25 @@ header h1 {
     width: 100%;
     margin: 15px 0;
     padding-bottom: 15px;
-    border-bottom: 1px solid #2a2a2a;
-}
-
-select {
-    background-color: #2a2a2a;
-    color: white;
-    border: 1px solid #404040;
-    padding: 8px 12px;
-    border-radius: 4px;
-    font-weight: bold;
 }
 
 .danger-btn {
     background-color: #8b0000;
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
+    padding: 14px 15px;
+    border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
     width: 100%;
+    font-size: 1rem;
+    transition: background 0.2s;
 }
 
 .danger-btn:hover { background-color: #b22222; }
 .back-btn { margin-top: 20px; background-color: #1a1a1a; }
 
-/* In-game Navigation elements */
+/* In-game header changes */
 header {
     display: flex;
     justify-content: space-between;
@@ -279,19 +249,56 @@ header {
 #btn-home:hover { background-color: #222; color: #fff; }
 .header-left, .header-right { width: 80px; }
 
-/* Cyberpunk Neon Theme Structural Sets */
-body.theme-cyberpunk { background-color: #0d0116; color: #00ffcc; }
-body.theme-cyberpunk .tile { background-color: #140526; border-color: #ff0055; color: #00ffcc; text-shadow: 0 0 5px #00ffcc; }
-body.theme-cyberpunk .tile.correct, body.theme-cyberpunk .key.correct { background-color: #00ffcc; color: #0d0116; border-color: #00ffcc; text-shadow: none; }
-body.theme-cyberpunk .tile.present, body.theme-cyberpunk .key.present { background-color: #ff0055; color: white; border-color: #ff0055; text-shadow: none; }
-body.theme-cyberpunk .menu-title { color: #ff0055; text-shadow: 0 0 10px #ff0055; }
-body.theme-cyberpunk .menu-btn { background-color: #140526; border-color: #ff0055; color: #00ffcc; }
-body.theme-cyberpunk .menu-btn:hover { background-color: #ff0055; color: white; border-color: #00ffcc; box-shadow: 0 0 10px #ff0055; }
 
-/* Mod Detonation Visual Effect Animation */
-@keyframes shake {
-  10%, 90% { transform: translate3d(-1px, 0, 0); }
-  20%, 80% { transform: translate3d(2px, 0, 0); }
-  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-  40%, 60% { transform: translate3d(4px, 0, 0); }
+/* --- IN-SITE NOTIFICATION SYSTEM (TOAST) --- */
+#toast-container {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.toast {
+    background-color: #e1e1e1;
+    color: #000000;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeInToast 0.2s forwards, fadeOutToast 0.2s 2.3s forwards;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Specific Notification Type Variations */
+.toast.success {
+    background-color: #538d4e;
+    color: #ffffff;
+}
+
+.toast.error {
+    background-color: #ba3c3c;
+    color: #ffffff;
+}
+
+@keyframes fadeInToast {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOutToast {
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
 }
