@@ -10,28 +10,8 @@
     <!-- IN-SITE NOTIFICATION BANNER CONTAINER -->
     <div id="toast-container"></div>
 
-    <!-- LOADING SCREEN OVERLAY -->
-    <div id="loading-screen" class="loading-overlay">
-        <div class="loading-box">
-            <h2 class="loading-title">LOADING MORDLE</h2>
-            <div class="progress-container">
-                <div id="progress-fill" class="progress-bar"></div>
-            </div>
-            <div id="percent-text" class="progress-percentage">0%</div>
-            
-            <!-- INTERACTIVE TIP COMPONENT -->
-            <div class="tip-box">
-                <span class="tip-label">TIP:</span>
-                <p id="loading-tip" class="tip-content">Preparing your custom dictionaries...</p>
-            </div>
-
-            <!-- SAFETY EMERGENCY OVERRIDE BUTTON -->
-            <button id="btn-skip-loading" class="skip-loading-btn">Stuck? Skip Loading</button>
-        </div>
-    </div>
-
-    <!-- MAIN MENU LAYER -->
-    <div id="main-menu" class="menu-container hidden">
+    <!-- MAIN MENU LAYER (Visible immediately on page load) -->
+    <div id="main-menu" class="menu-container">
         <!-- GRAPHIC GAME TILED TITLE -->
         <h1 class="menu-title">
             <span class="title-tile correct">M</span>
@@ -141,7 +121,6 @@
     <script type="module" src="words.js"></script>
     <script type="module" src="stats.js"></script>
     <script type="module" src="checker.js"></script>
-    <script type="module" src="tips.js"></script>
     <script type="module" src="board.js"></script>
     <script type="module" src="script.js"></script>
 </body>
