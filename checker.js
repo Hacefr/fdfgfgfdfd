@@ -1,39 +1,44 @@
-const CURRENT_CLIENT_VERSION = "mordle-v1.0.0";
-const VERSION_FILE_URL = "./version.txt";
+const STAMP_FILE = './version.txt';
+const CURRENT_VERSION = 'mordle-v1.0.0';
 
-export async function verifyGameIntegrity(onProgress) {
+// Export the function with the exact name requested by script.js
+export async function checkGameVersion() {
+    const banner = document.getElementById('integrity-infobar');
+    const text = document.getElementById('integrity-text');
+    
     try {
-        // Step 1: Simulate network handshakes and dictionary lookups (0% to 40%)
-        for (let pct = 0; pct <= 40; pct += 5) {
-            onProgress(pct, "Connecting to repository servers...");
-            await new Promise(r => setTimeout(r, 80));
-        }
-
-        // Step 2: Fetch the live version file using a timestamp parameters to kill browser cache
-        const cacheBusterUrl = `${VERSION_FILE_URL}?t=${Date.now()}`;
-        const response = await fetch(cacheBusterUrl);
+        // Fetch version file with a cache-busting timestamp to bypass GitHub Pages cache
+        const response = await fetch(`${STAMP_FILE}?t=${Date.now()}`);
+        if (!response.ok) throw new Error('Could not verify server version');
         
-        if (!response.ok) throw new Error("Could not ping master version registry");
-        const serverVersionText = (await response.text()).trim();
-
-        // Step 3: Run reading calculations step animations (45% to 85%)
-        for (let pct = 45; pct <= 85; pct += 8) {
-            onProgress(pct, "Evaluating component files...");
-            await new Promise(r => setTimeout(r, 60));
-        }
-
-        // Step 4: Perform comparison validation checks
-        const isUpToDate = (serverVersionText === CURRENT_CLIENT_VERSION);
-
-        if (isUpToDate) {
-            onProgress(100, `Operational (${CURRENT_CLIENT_VERSION})`);
-            return { status: "success", version: CURRENT_CLIENT_VERSION };
+        const latestVersion = await response.text();
+        
+        if (latestVersion.trim() === CURRENT_VERSION) {
+            // System is completely up to date
+            if (banner) {
+                banner.className = "integrity-banner status-operational";
+            }
+            if (text) {
+                text.textContent = "System: Operational (v1.0.0)";
+            }
         } else {
-            return { status: "outdated", current: CURRENT_CLIENT_VERSION, latest: serverVersionText };
+            // Cache is outdated or new deployment detected
+            if (banner) {
+                banner.className = "integrity-banner status-outdated";
+            }
+            if (text) {
+                text.textContent = "Update Available! Please Refresh Page.";
+            }
+            console.warn("Client build is outdated. Remote version is: " + latestVersion);
         }
-
     } catch (error) {
-        console.error("System Check Error:", error);
-        return { status: "offline", current: CURRENT_CLIENT_VERSION };
+        console.error("Integrity validation error:", error);
+        // Fallback to generic offline state if network is blocked
+        if (banner) {
+            banner.className = "integrity-banner status-operational";
+        }
+        if (text) {
+            text.textContent = "System: Local Mode (Offline)";
+        }
     }
 }
