@@ -15,7 +15,7 @@ let gameMode = 'random';
 let screenMenu, screenGame, screenStats, screenSettings, screenModded;
 let boardContainer, gameModeTitle, toastContainer;
 
-// 🚀 Safe Background Asset Loader
+// Safe Background Asset Loader
 async function loadBackgroundAssets() {
     try {
         await fetchWordList();
@@ -34,9 +34,8 @@ async function loadBackgroundAssets() {
     }
 }
 
-// 🛠️ Main App Initialization System
+// Main App Initialization System
 function initApp() {
-    // Select DOM nodes safely after the document has loaded
     screenMenu = document.getElementById('main-menu');
     screenGame = document.getElementById('active-game');
     screenStats = document.getElementById('stats-screen');
@@ -46,12 +45,9 @@ function initApp() {
     gameModeTitle = document.getElementById('game-mode-title');
     toastContainer = document.getElementById('toast-container');
 
-    // Load user records and bind buttons instantly
     loadStats();
     setupMenuEvents();
     setupKeyboardEvents();
-
-    // Fire off network requests silently in the background
     loadBackgroundAssets();
 }
 
@@ -220,7 +216,6 @@ function setupKeyboardEvents() {
     });
 }
 
-// 🏁 Force execution to wait until the browser layout engine is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
 } else {
