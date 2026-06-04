@@ -1,6 +1,6 @@
 // REPLACE THIS WITH YOUR EXACT RAW GITHUB LINK
 // Make sure the file contains an array of 5-letter words, e.g., ["apple", "house", "train"]
-const GITHUB_WORD_LIST_URL = 'https://githubusercontent.com';
+const GITHUB_WORD_LIST_URL = 'https://github.com/tabatkins/wordle-list';
 
 const WORD_LENGTH = 5;
 const MAX_GUESSES = 6;
