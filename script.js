@@ -17,23 +17,29 @@ const screenSettings = document.getElementById('settings-screen');
 const screenModded = document.getElementById('modded-screen');
 const boardContainer = document.getElementById('board-container');
 const gameModeTitle = document.getElementById('game-mode-title');
+const toastContainer = document.getElementById('toast-container');
 
 // Initialize Orchestration Loop
 async function initApp() {
     loadStats();
-    loadTheme();
     setupMenuEvents();
     await fetchWordList();
 }
 
-function loadTheme() {
-    const savedTheme = localStorage.getItem('mordle_theme') || 'classic';
-    const themeSelect = document.getElementById('theme-select');
-    if (themeSelect) themeSelect.value = savedTheme;
-    document.body.className = '';
-    if (savedTheme !== 'classic') {
-        document.body.classList.add(`theme-${savedTheme}`);
-    }
+// In-site Custom Notification Engine
+function showToast(message, type = 'normal') {
+    if (!toastContainer) return;
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    
+    toastContainer.appendChild(toast);
+    
+    // Remove element completely once CSS animation finishes
+    setTimeout(() => {
+        toast.remove();
+    }, 2500);
 }
 
 function showScreen(screenToShow) {
@@ -58,23 +64,14 @@ function setupMenuEvents() {
     document.getElementById('btn-reset-data')?.addEventListener('click', () => {
         if (confirm("Are you absolutely sure you want to erase all your stats?")) {
             resetStats();
-            alert("Statistics reset successfully!");
+            showToast("Statistics reset successfully!", "error");
         }
-    });
-
-    const themeSelect = document.getElementById('theme-select');
-    themeSelect?.addEventListener('change', (e) => {
-        document.body.className = ''; 
-        if (e.target.value !== 'classic') {
-            document.body.classList.add(`theme-${e.target.value}`);
-        }
-        localStorage.setItem('mordle_theme', e.target.value);
     });
 }
 
 function startNewGame(mode) {
     if (!wordList || wordList.length === 0) {
-        alert("Word list downloading, please wait a brief second.");
+        showToast("Word list still loading...", "normal");
         return;
     }
     
@@ -133,13 +130,13 @@ function updateGrid() {
 
 function checkGuess() {
     if (currentGuess.length !== WORD_LENGTH) {
-        alert('Not enough letters!');
+        showToast("Not enough letters!", "error");
         return;
     }
 
     const guessString = currentGuess.join('');
     if (!isValidWord(guessString)) {
-        alert('Not in word list!');
+        showToast("Not in word list!", "error");
         return;
     }
 
@@ -173,7 +170,7 @@ function checkGuess() {
     }
 
     if (guessString === targetWord) {
-        alert('You win! 🎉');
+        showToast("You win! 🎉 Splendid!", "success");
         isGameOver = true;
         saveStats(true);
         return;
@@ -183,7 +180,7 @@ function checkGuess() {
     currentGuess = [];
 
     if (guessesRemaining === 0) {
-        alert(`Game over! The word was: ${targetWord}`);
+        showToast(`Game over! Word: ${targetWord}`, "error");
         isGameOver = true;
         saveStats(false);
     }
