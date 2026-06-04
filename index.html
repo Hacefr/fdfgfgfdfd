@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- INTERACTIVE LOADING SCREEN OVERLAY -->
+    <div id="loading-screen" class="loading-overlay">
+        <div class="loading-box">
+            <h2 class="loading-logo">MORDLE</h2>
+            <div class="spinner"></div>
+            <p id="loading-status">Verifying system integrity...</p>
+            <button id="btn-skip-loading" class="hidden">Skip Verification</button>
+        </div>
+    </div>
+
     <!-- IN-SITE NOTIFICATION BANNER CONTAINER -->
     <div id="toast-container"></div>
 
@@ -26,10 +36,15 @@
         <div class="menu-buttons">
             <button class="menu-btn" id="btn-daily">Play Daily</button>
             <button class="menu-btn" id="btn-random">Play Random</button>
-            <button class="menu-btn" id="btn-modded">Play Modded</button>
+            <button class="menu-btn disabled" id="btn-modded">Play Modded <span class="badge">Locked</span></button>
             <button class="menu-btn" id="btn-stats">Stats</button>
             <button class="menu-btn" id="btn-settings">Settings</button>
         </div>
+
+        <!-- LIVE BUILD FOOTER INTEGRITY STAMP -->
+        <footer class="integrity-footer">
+            <span id="integrity-badge">● Checking Build...</span>
+        </footer>
     </div>
 
     <!-- STATS MODAL/SCREEN -->
@@ -54,10 +69,10 @@
         <button class="menu-btn back-btn">Main Menu</button>
     </div>
 
-    <!-- MODDED SCREEN INTERFACE CONTAINER -->
+    <!-- MODDED PLACEHOLDER SCREEN -->
     <div id="modded-screen" class="menu-container hidden">
         <h2>MODDED MODES</h2>
-        <p style="color: #818384; margin: 15px 0 30px 0;">Exciting custom rules and hazards coming soon!</p>
+        <p>Exciting custom rules and hazards coming soon!</p>
         <button class="menu-btn back-btn">Main Menu</button>
     </div>
 
@@ -113,6 +128,7 @@
     </div>
 
     <!-- Modular Script Architecture Elements -->
+    <script type="module" src="checker.js"></script>
     <script type="module" src="words.js"></script>
     <script type="module" src="stats.js"></script>
     <script type="module" src="script.js"></script>
