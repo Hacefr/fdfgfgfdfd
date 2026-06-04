@@ -3,14 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wordle Clone Template</title>
+    <title>Mordle - Modded Wordle</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="game-container">
+    <!-- MAIN MENU LAYER -->
+    <div id="main-menu" class="menu-container">
+        <h1 class="menu-title">MORDLE</h1>
+        <p class="menu-subtitle">The Modded Wordle Clone</p>
+        
+        <div class="menu-buttons">
+            <button class="menu-btn" id="btn-daily">Play Daily</button>
+            <button class="menu-btn" id="btn-random">Play Random</button>
+            <button class="menu-btn" id="btn-modded">Play Modded</button>
+            <button class="menu-btn" id="btn-stats">Stats</button>
+            <button class="menu-btn" id="btn-settings">Settings</button>
+        </div>
+    </div>
+
+    <!-- STATS SCREEN -->
+    <div id="stats-screen" class="menu-container hidden">
+        <h2>YOUR STATISTICS</h2>
+        <div class="stats-grid">
+            <div class="stat-box"><span id="stat-played">0</span><p>Played</p></div>
+            <div class="stat-box"><span id="stat-win-pct">0%</span><p>Win %</p></div>
+            <div class="stat-box"><span id="stat-streak">0</span><p>Current Streak</p></div>
+            <div class="stat-box"><span id="stat-max-streak">0</span><p>Max Streak</p></div>
+        </div>
+        <button class="menu-btn back-btn">Main Menu</button>
+    </div>
+
+    <!-- SETTINGS SCREEN -->
+    <div id="settings-screen" class="menu-container hidden">
+        <h2>SETTINGS</h2>
+        <div class="setting-row">
+            <label for="theme-select">Visual Theme:</label>
+            <select id="theme-select">
+                <option value="classic">Classic Dark</option>
+                <option value="cyberpunk">Cyberpunk Neon</option>
+            </select>
+        </div>
+        <div class="setting-row">
+            <button id="btn-reset-data" class="danger-btn">Reset All Stats</button>
+        </div>
+        <button class="menu-btn back-btn">Main Menu</button>
+    </div>
+
+    <!-- MODDED SELECTION SCREEN -->
+    <div id="modded-screen" class="menu-container hidden">
+        <h2>MODDED MODES</h2>
+        <p class="menu-subtitle">Choose your modification style</p>
+        <div class="menu-buttons">
+            <button class="menu-btn mod-variant-btn" data-mod="speed">⚡ Speed-Run (15s Timer)</button>
+            <button class="menu-btn mod-variant-btn" data-mod="hp">💔 Hardcore (HP Mechanics)</button>
+            <button class="menu-btn mod-variant-btn" data-mod="mines">💥 Minefield (Rigged Keys)</button>
+        </div>
+        <button class="menu-btn back-btn">Main Menu</button>
+    </div>
+
+    <!-- MAIN GAME CONTAINER -->
+    <div class="game-container hidden" id="active-game">
         <header>
-            <h1>WORDLE CLONE</h1>
+            <div class="header-left"><button id="btn-home">🏠 Menu</button></div>
+            <h1 id="game-mode-title">WORDLE CLONE</h1>
+            <div class="header-right"></div>
         </header>
+
+        <!-- Dynamic Game Mod Info Overlays -->
+        <div id="mod-status-bar" class="hidden">
+            <div id="timer-display" class="hidden">Time Left: <span id="timer-sec">15</span>s</div>
+            <div id="hp-display" class="hidden">
+                HP: <span id="hp-val">100</span>/100
+                <div class="hp-bar-container"><div id="hp-bar-fill"></div></div>
+            </div>
+            <div id="mines-display" class="hidden">⚠️ 2 Mines Hidden on Keyboard!</div>
+        </div>
 
         <div id="board-container"></div>
 
@@ -51,6 +118,7 @@
             </div>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
