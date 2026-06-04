@@ -2,6 +2,7 @@ import { fetchWordList, getTargetWord, isValidWord, wordList } from './words.js'
 import { loadStats, saveStats, resetStats } from './stats.js';
 import { checkGameVersion } from './checker.js';
 import { getRandomTip } from './tips.js';
+import { initBoard, updateGrid } from './board.js';
 
 const WORD_LENGTH = 5;
 const MAX_GUESSES = 6;
@@ -25,17 +26,13 @@ const boardContainer = document.getElementById('board-container');
 const gameModeTitle = document.getElementById('game-mode-title');
 const toastContainer = document.getElementById('toast-container');
 
-// Initialize Orchestration Loop with Simulated Loading Percentage Sequence
+// Initialize Orchestration Loop with Loading Progress Sequence
 async function initApp() {
     loadStats();
     setupMenuEvents();
     
-    // Pick and render an initial tip choice right away
-    if (loadingTipText) {
-        loadingTipText.textContent = getRandomTip();
-    }
+    if (loadingTipText) loadingTipText.textContent = getRandomTip();
     
-    // Cycle tips visually every 2.5 seconds during a load sequence
     const tipInterval = setInterval(() => {
         if (loadingTipText && !screenLoading.classList.contains('hidden')) {
             loadingTipText.textContent = getRandomTip();
@@ -45,55 +42,45 @@ async function initApp() {
     }, 2500);
 
     try {
-        // Step 1: Initialize System Progress
         updateLoadingProgress(15);
         await new Promise(r => setTimeout(r, 400));
         
-        // Step 2: Integrity File Check Context
         updateLoadingProgress(45);
         await checkGameVersion();
         await new Promise(r => setTimeout(r, 400));
         
-        // Step 3: Local Text Resource Download Loop
         updateLoadingProgress(75);
         await fetchWordList();
         await new Promise(r => setTimeout(r, 400));
         
-        // Step 4: Ready State Launch Finish
         updateLoadingProgress(100);
         await new Promise(r => setTimeout(r, 300));
         
-        // Hide loading backdrop wrapper cleanly to display workspace menu
-        if (screenLoading) screenLoading.classList.add('hidden');
-        showScreen(screenMenu);
-        
+        bypassLoadingScreen();
     } catch (error) {
-        console.error("Initialization pipeline broke:", error);
-        showToast("System error running assets. Booting bypass...", "error");
-        if (screenLoading) screenLoading.classList.add('hidden');
-        showScreen(screenMenu);
+        console.error("Initialization failed:", error);
+        showToast("Loading encounter anomaly. Skipping safely...", "error");
+        bypassLoadingScreen();
     }
 }
 
-// Controls progress fill and dynamic numeric metrics values
 function updateLoadingProgress(percentage) {
     if (progressFill) progressFill.style.width = `${percentage}%`;
     if (percentText) percentText.textContent = `${percentage}%`;
 }
 
-// In-site Custom Notification Engine
+function bypassLoadingScreen() {
+    if (screenLoading) screenLoading.classList.add('hidden');
+    showScreen(screenMenu);
+}
+
 export function showToast(message, type = 'normal') {
     if (!toastContainer) return;
-    
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.textContent = message;
-    
     toastContainer.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.remove();
-    }, 2500);
+    setTimeout(() => toast.remove(), 2500);
 }
 
 function showScreen(screenToShow) {
@@ -109,6 +96,10 @@ function setupMenuEvents() {
     document.getElementById('btn-stats')?.addEventListener('click', () => showScreen(screenStats));
     document.getElementById('btn-settings')?.addEventListener('click', () => showScreen(screenSettings));
     document.getElementById('btn-modded')?.addEventListener('click', () => showScreen(screenModded));
+    document.getElementById('btn-skip-loading')?.addEventListener('click', () => {
+        showToast("Forcing manual boot sequence...", "normal");
+        bypassLoadingScreen();
+    });
     
     document.querySelectorAll('.back-btn').forEach(btn => {
         btn.addEventListener('click', () => showScreen(screenMenu));
@@ -125,7 +116,7 @@ function setupMenuEvents() {
 
 function startNewGame(mode) {
     if (!wordList || wordList.length === 0) {
-        showToast("Word list still loading...", "normal");
+        showToast("Word list missing!", "error");
         return;
     }
     
@@ -134,55 +125,16 @@ function startNewGame(mode) {
     guessesRemaining = MAX_GUESSES;
     currentGuess = [];
     
-    document.querySelectorAll('.key').forEach(k => {
-        k.classList.remove('correct', 'present', 'absent');
-    });
-
-    if (mode === 'daily') {
-        if (gameModeTitle) gameModeTitle.textContent = "DAILY MORDLE";
-    } else {
-        if (gameModeTitle) gameModeTitle.textContent = "RANDOM MORDLE";
-    }
+    document.querySelectorAll('.key').forEach(k => k.classList.remove('correct', 'present', 'absent'));
+    if (gameModeTitle) gameModeTitle.textContent = mode === 'daily' ? "DAILY MORDLE" : "RANDOM MORDLE";
 
     targetWord = getTargetWord(mode);
     console.log('Target Word:', targetWord); 
-    initBoard();
+    initBoard(boardContainer);
     showScreen(screenGame);
 }
 
-function initBoard() {
-    if (!boardContainer) return;
-    boardContainer.innerHTML = '';
-    for (let i = 0; i < MAX_GUESSES; i++) {
-        const row = document.createElement('div');
-        row.className = 'row';
-        for (let j = 0; j < WORD_LENGTH; j++) {
-            const tile = document.createElement('div');
-            tile.className = 'tile';
-            row.appendChild(tile);
-        }
-        boardContainer.appendChild(row);
-    }
-}
-
-function updateGrid() {
-    const rows = document.getElementsByClassName('row');
-    const activeRow = rows[MAX_GUESSES - guessesRemaining];
-    if (!activeRow) return;
-    const tiles = activeRow.getElementsByClassName('tile');
-    
-    for (let i = 0; i < WORD_LENGTH; i++) {
-        if (currentGuess[i]) {
-            tiles[i].textContent = currentGuess[i];
-            tiles[i].classList.add('filled');
-        } else {
-            tiles[i].textContent = '';
-            tiles[i].classList.remove('filled');
-        }
-    }
-}
-
-function checkGuess() {
+function handleGuessChecking() {
     if (currentGuess.length !== WORD_LENGTH) {
         showToast("Not enough letters!", "error");
         return;
@@ -259,18 +211,17 @@ function handleKeyPress(key) {
 
     if (key === 'BACKSPACE' && currentGuess.length > 0) {
         currentGuess.pop();
-        updateGrid();
+        updateGrid(currentGuess, guessesRemaining);
     } 
     else if (key === 'ENTER') {
-        checkGuess();
+        handleGuessChecking();
     } 
     else if (currentGuess.length < WORD_LENGTH && key.length === 1 && key.match(/[a-zA-Z]/)) {
         currentGuess.push(key.toUpperCase());
-        updateGrid();
+        updateGrid(currentGuess, guessesRemaining);
     }
 }
 
-// Input Event Triggers
 document.addEventListener('keydown', (e) => {
     let key = e.key.toUpperCase();
     if (key === 'ENTER') handleKeyPress('ENTER');
@@ -286,5 +237,4 @@ keyboardKeys.forEach(key => {
     });
 });
 
-// Launch App Execution Context
 initApp();
