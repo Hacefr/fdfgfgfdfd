@@ -7,13 +7,27 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <!-- INTERACTIVE LOADING SCREEN OVERLAY -->
     <div id="loading-screen" class="loading-overlay">
-        <div class="loading-box">
-            <h2 class="loading-logo">MORDLE</h2>
-            <div class="spinner"></div>
-            <p id="loading-status">Verifying system integrity...</p>
-            <button id="btn-skip-loading" class="hidden">Skip Verification</button>
+        <div class="loading-content">
+            <h1 class="loading-logo">MORDLE</h1>
+            <p id="loading-status" class="loading-status-text">Initializing parameters...</p>
+            
+            <!-- Visual Progress Bar Element -->
+            <div class="progress-bar-container">
+                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+            </div>
+            <p id="loading-percentage" class="loading-pct-text">0%</p>
+            
+            <!-- Interactive Rotating Tips Element -->
+            <div id="loading-tip-container" class="loading-tip-box">Loading tactical advice...</div>
+            
+            <!-- Fallback interaction container if updates/failures loop -->
+            <div id="loading-action-container" class="hidden">
+                <button id="btn-force-reload" class="danger-btn">Force Refresh App</button>
+                <button id="btn-skip-loading" class="menu-btn" style="margin-top: 10px;">Skip Verification</button>
+            </div>
         </div>
     </div>
 
@@ -21,7 +35,7 @@
     <div id="toast-container"></div>
 
     <!-- MAIN MENU LAYER -->
-    <div id="main-menu" class="menu-container">
+    <div id="main-menu" class="menu-container hidden">
         <!-- GRAPHIC GAME TILED TITLE -->
         <h1 class="menu-title">
             <span class="title-tile correct">M</span>
@@ -41,9 +55,9 @@
             <button class="menu-btn" id="btn-settings">Settings</button>
         </div>
 
-        <!-- LIVE BUILD FOOTER INTEGRITY STAMP -->
-        <footer class="integrity-footer">
-            <span id="integrity-badge">● Checking Build...</span>
+        <!-- LIVE SYSTEM FOOTER LOGO -->
+        <footer id="system-status-footer" class="system-footer-text">
+            ● System: Verifying integrity...
         </footer>
     </div>
 
@@ -69,10 +83,10 @@
         <button class="menu-btn back-btn">Main Menu</button>
     </div>
 
-    <!-- MODDED PLACEHOLDER SCREEN -->
+    <!-- MODDED SCREEN INTERFACE CONTAINER -->
     <div id="modded-screen" class="menu-container hidden">
         <h2>MODDED MODES</h2>
-        <p>Exciting custom rules and hazards coming soon!</p>
+        <p style="color: #818384; margin: 15px 0 30px 0;">Exciting custom rules and hazards coming soon!</p>
         <button class="menu-btn back-btn">Main Menu</button>
     </div>
 
@@ -128,6 +142,7 @@
     </div>
 
     <!-- Modular Script Architecture Elements -->
+    <script type="module" src="tips.js"></script>
     <script type="module" src="checker.js"></script>
     <script type="module" src="words.js"></script>
     <script type="module" src="stats.js"></script>
