@@ -1,5 +1,7 @@
 import { fetchWordList, getTargetWord, isValidWord, wordList } from './words.js';
 import { loadStats, saveStats, resetStats } from './stats.js';
+import { checkGameVersion } from './checker.js';
+import { getRandomTip } from './tips.js';
 
 const WORD_LENGTH = 5;
 const MAX_GUESSES = 6;
@@ -9,6 +11,11 @@ let guessesRemaining = MAX_GUESSES;
 let isGameOver = false;
 let gameMode = 'random'; 
 
+// DOM Screen Elements
+const screenLoading = document.getElementById('loading-screen');
+const progressFill = document.getElementById('progress-fill');
+const percentText = document.getElementById('percent-text');
+const loadingTipText = document.getElementById('loading-tip');
 const screenMenu = document.getElementById('main-menu');
 const screenGame = document.getElementById('active-game');
 const screenStats = document.getElementById('stats-screen');
@@ -18,13 +25,64 @@ const boardContainer = document.getElementById('board-container');
 const gameModeTitle = document.getElementById('game-mode-title');
 const toastContainer = document.getElementById('toast-container');
 
+// Initialize Orchestration Loop with Simulated Loading Percentage Sequence
 async function initApp() {
     loadStats();
     setupMenuEvents();
-    await fetchWordList();
+    
+    // Pick and render an initial tip choice right away
+    if (loadingTipText) {
+        loadingTipText.textContent = getRandomTip();
+    }
+    
+    // Cycle tips visually every 2.5 seconds during a load sequence
+    const tipInterval = setInterval(() => {
+        if (loadingTipText && !screenLoading.classList.contains('hidden')) {
+            loadingTipText.textContent = getRandomTip();
+        } else {
+            clearInterval(tipInterval);
+        }
+    }, 2500);
+
+    try {
+        // Step 1: Initialize System Progress
+        updateLoadingProgress(15);
+        await new Promise(r => setTimeout(r, 400));
+        
+        // Step 2: Integrity File Check Context
+        updateLoadingProgress(45);
+        await checkGameVersion();
+        await new Promise(r => setTimeout(r, 400));
+        
+        // Step 3: Local Text Resource Download Loop
+        updateLoadingProgress(75);
+        await fetchWordList();
+        await new Promise(r => setTimeout(r, 400));
+        
+        // Step 4: Ready State Launch Finish
+        updateLoadingProgress(100);
+        await new Promise(r => setTimeout(r, 300));
+        
+        // Hide loading backdrop wrapper cleanly to display workspace menu
+        if (screenLoading) screenLoading.classList.add('hidden');
+        showScreen(screenMenu);
+        
+    } catch (error) {
+        console.error("Initialization pipeline broke:", error);
+        showToast("System error running assets. Booting bypass...", "error");
+        if (screenLoading) screenLoading.classList.add('hidden');
+        showScreen(screenMenu);
+    }
 }
 
-function showToast(message, type = 'normal') {
+// Controls progress fill and dynamic numeric metrics values
+function updateLoadingProgress(percentage) {
+    if (progressFill) progressFill.style.width = `${percentage}%`;
+    if (percentText) percentText.textContent = `${percentage}%`;
+}
+
+// In-site Custom Notification Engine
+export function showToast(message, type = 'normal') {
     if (!toastContainer) return;
     
     const toast = document.createElement('div');
@@ -212,6 +270,7 @@ function handleKeyPress(key) {
     }
 }
 
+// Input Event Triggers
 document.addEventListener('keydown', (e) => {
     let key = e.key.toUpperCase();
     if (key === 'ENTER') handleKeyPress('ENTER');
@@ -227,4 +286,5 @@ keyboardKeys.forEach(key => {
     });
 });
 
+// Launch App Execution Context
 initApp();
