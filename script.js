@@ -1,14 +1,14 @@
 import { fetchWordList, getTargetWord, isValidWord, wordList } from './words.js';
 import { loadStats, saveStats, resetStats } from './stats.js';
-import { currentConfig, selectGameMode } from './gamemodes.js';
 
 const WORD_LENGTH = 5;
+const MAX_GUESSES = 6;
 let targetWord = '';
 let currentGuess = [];
-let guessesRemaining = 6;
+let guessesRemaining = MAX_GUESSES;
 let isGameOver = false;
+let gameMode = 'random'; 
 
-// DOM Screen Elements
 const screenMenu = document.getElementById('main-menu');
 const screenGame = document.getElementById('active-game');
 const screenStats = document.getElementById('stats-screen');
@@ -18,14 +18,12 @@ const boardContainer = document.getElementById('board-container');
 const gameModeTitle = document.getElementById('game-mode-title');
 const toastContainer = document.getElementById('toast-container');
 
-// Initialize Orchestration Loop
 async function initApp() {
     loadStats();
     setupMenuEvents();
     await fetchWordList();
 }
 
-// In-site Custom Notification Engine
 function showToast(message, type = 'normal') {
     if (!toastContainer) return;
     
@@ -48,17 +46,11 @@ function showScreen(screenToShow) {
 }
 
 function setupMenuEvents() {
-    // Standard Modes
     document.getElementById('btn-random')?.addEventListener('click', () => startNewGame('random'));
     document.getElementById('btn-daily')?.addEventListener('click', () => startNewGame('daily'));
-    
-    // Modded Screen and Sub-Modes Menu Hooks
-    document.getElementById('btn-modded')?.addEventListener('click', () => showScreen(screenModded));
-    document.getElementById('btn-mod-hardcore')?.addEventListener('click', () => startNewGame('hardcore'));
-    document.getElementById('btn-mod-suddendeath')?.addEventListener('click', () => startNewGame('sudden-death'));
-    
     document.getElementById('btn-stats')?.addEventListener('click', () => showScreen(screenStats));
     document.getElementById('btn-settings')?.addEventListener('click', () => showScreen(screenSettings));
+    document.getElementById('btn-modded')?.addEventListener('click', () => showScreen(screenModded));
     
     document.querySelectorAll('.back-btn').forEach(btn => {
         btn.addEventListener('click', () => showScreen(screenMenu));
@@ -79,21 +71,22 @@ function startNewGame(mode) {
         return;
     }
     
-    // Apply configurations from gamemodes module
-    selectGameMode(mode);
+    gameMode = mode;
     isGameOver = false;
-    guessesRemaining = currentConfig.maxGuesses;
+    guessesRemaining = MAX_GUESSES;
     currentGuess = [];
     
     document.querySelectorAll('.key').forEach(k => {
         k.classList.remove('correct', 'present', 'absent');
     });
 
-    if (gameModeTitle) {
-        gameModeTitle.textContent = currentConfig.displayName;
+    if (mode === 'daily') {
+        if (gameModeTitle) gameModeTitle.textContent = "DAILY MORDLE";
+    } else {
+        if (gameModeTitle) gameModeTitle.textContent = "RANDOM MORDLE";
     }
 
-    targetWord = getTargetWord(currentConfig.modeName);
+    targetWord = getTargetWord(mode);
     console.log('Target Word:', targetWord); 
     initBoard();
     showScreen(screenGame);
@@ -102,7 +95,7 @@ function startNewGame(mode) {
 function initBoard() {
     if (!boardContainer) return;
     boardContainer.innerHTML = '';
-    for (let i = 0; i < currentConfig.maxGuesses; i++) {
+    for (let i = 0; i < MAX_GUESSES; i++) {
         const row = document.createElement('div');
         row.className = 'row';
         for (let j = 0; j < WORD_LENGTH; j++) {
@@ -116,7 +109,7 @@ function initBoard() {
 
 function updateGrid() {
     const rows = document.getElementsByClassName('row');
-    const activeRow = rows[currentConfig.maxGuesses - guessesRemaining];
+    const activeRow = rows[MAX_GUESSES - guessesRemaining];
     if (!activeRow) return;
     const tiles = activeRow.getElementsByClassName('tile');
     
@@ -144,7 +137,7 @@ function checkGuess() {
     }
 
     const rows = document.getElementsByClassName('row');
-    const activeRow = rows[currentConfig.maxGuesses - guessesRemaining];
+    const activeRow = rows[MAX_GUESSES - guessesRemaining];
     if (!activeRow) return;
     const tiles = activeRow.getElementsByClassName('tile');
     let targetWordArr = targetWord.split('');
@@ -219,7 +212,6 @@ function handleKeyPress(key) {
     }
 }
 
-// Input Event Triggers
 document.addEventListener('keydown', (e) => {
     let key = e.key.toUpperCase();
     if (key === 'ENTER') handleKeyPress('ENTER');
@@ -235,5 +227,4 @@ keyboardKeys.forEach(key => {
     });
 });
 
-// Launch App Execution Context
 initApp();
