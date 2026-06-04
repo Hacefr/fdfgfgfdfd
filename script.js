@@ -21,19 +21,32 @@ const boardContainer = document.getElementById('board-container');
 const gameModeTitle = document.getElementById('game-mode-title');
 const toastContainer = document.getElementById('toast-container');
 
-// Launch Application Instantly
-async function initApp() {
-    loadStats();
-    setupMenuEvents();
-    
-    // Background execution operations run smoothly without blocking inputs
+// 🚀 CRITICAL CRASH VALVE: Event attachments initialize FIRST
+loadStats();
+setupMenuEvents();
+
+// Defer server file loading to background context so click loops never freeze
+async function loadBackgroundAssets() {
     try {
         await fetchWordList();
+    } catch (e) {
+        console.error("Local dictionary list fetch failed:", e);
+    }
+    
+    try {
         await checkGameVersion();
     } catch (e) {
-        console.error("Silent asset setup encounter error:", e);
+        console.error("Integrity check build verification failed:", e);
+        // Fallback UI adjustments to ensure banner clears checking phase safely
+        const banner = document.getElementById('integrity-infobar');
+        const text = document.getElementById('integrity-text');
+        if (banner) { banner.className = "integrity-banner status-operational"; }
+        if (text) { text.textContent = "System: Local Only (Offline Mode)"; }
     }
 }
+
+// Trigger background data operations immediately after event loops mount
+loadBackgroundAssets();
 
 export function showToast(message, type = 'normal') {
     if (!toastContainer) return;
@@ -77,7 +90,7 @@ function setupMenuEvents() {
 
 function startNewGame(mode) {
     if (!wordList || wordList.length === 0) {
-        showToast("Word list missing!", "error");
+        showToast("Word list missing or still downloading!", "error");
         return;
     }
     
@@ -197,5 +210,3 @@ keyboardKeys.forEach(key => {
         handleKeyPress(keyValue);
     });
 });
-
-initApp();
