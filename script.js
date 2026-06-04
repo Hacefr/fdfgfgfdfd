@@ -12,20 +12,10 @@ let isGameOver = false;
 let gameMode = 'random'; 
 
 // DOM Screen Elements
-const screenMenu = document.getElementById('main-menu');
-const screenGame = document.getElementById('active-game');
-const screenStats = document.getElementById('stats-screen');
-const screenSettings = document.getElementById('settings-screen');
-const screenModded = document.getElementById('modded-screen');
-const boardContainer = document.getElementById('board-container');
-const gameModeTitle = document.getElementById('game-mode-title');
-const toastContainer = document.getElementById('toast-container');
+let screenMenu, screenGame, screenStats, screenSettings, screenModded;
+let boardContainer, gameModeTitle, toastContainer;
 
-// 🚀 CRITICAL CRASH VALVE: Event attachments initialize FIRST
-loadStats();
-setupMenuEvents();
-
-// Defer server file loading to background context so click loops never freeze
+// 🚀 Safe Background Asset Loader
 async function loadBackgroundAssets() {
     try {
         await fetchWordList();
@@ -37,16 +27,33 @@ async function loadBackgroundAssets() {
         await checkGameVersion();
     } catch (e) {
         console.error("Integrity check build verification failed:", e);
-        // Fallback UI adjustments to ensure banner clears checking phase safely
         const banner = document.getElementById('integrity-infobar');
         const text = document.getElementById('integrity-text');
-        if (banner) { banner.className = "integrity-banner status-operational"; }
-        if (text) { text.textContent = "System: Local Only (Offline Mode)"; }
+        if (banner) banner.className = "integrity-banner status-operational";
+        if (text) text.textContent = "System: Local Only (Offline Mode)";
     }
 }
 
-// Trigger background data operations immediately after event loops mount
-loadBackgroundAssets();
+// 🛠️ Main App Initialization System
+function initApp() {
+    // Select DOM nodes safely after the document has loaded
+    screenMenu = document.getElementById('main-menu');
+    screenGame = document.getElementById('active-game');
+    screenStats = document.getElementById('stats-screen');
+    screenSettings = document.getElementById('settings-screen');
+    screenModded = document.getElementById('modded-screen');
+    boardContainer = document.getElementById('board-container');
+    gameModeTitle = document.getElementById('game-mode-title');
+    toastContainer = document.getElementById('toast-container');
+
+    // Load user records and bind buttons instantly
+    loadStats();
+    setupMenuEvents();
+    setupKeyboardEvents();
+
+    // Fire off network requests silently in the background
+    loadBackgroundAssets();
+}
 
 export function showToast(message, type = 'normal') {
     if (!toastContainer) return;
@@ -58,7 +65,8 @@ export function showToast(message, type = 'normal') {
 }
 
 function showScreen(screenToShow) {
-    [screenMenu, screenGame, screenStats, screenSettings, screenModded].forEach(s => {
+    const screens = [screenMenu, screenGame, screenStats, screenSettings, screenModded];
+    screens.forEach(s => {
         if (s) s.classList.add('hidden');
     });
     if (screenToShow) screenToShow.classList.remove('hidden');
@@ -70,7 +78,6 @@ function setupMenuEvents() {
     document.getElementById('btn-stats')?.addEventListener('click', () => showScreen(screenStats));
     document.getElementById('btn-settings')?.addEventListener('click', () => showScreen(screenSettings));
     
-    // Play Modded now links to your upcoming sub-folder game structure safely
     document.getElementById('btn-modded')?.addEventListener('click', () => {
         window.location.href = './chaos-mode/chaos.html';
     });
@@ -196,17 +203,26 @@ function handleKeyPress(key) {
     }
 }
 
-document.addEventListener('keydown', (e) => {
-    let key = e.key.toUpperCase();
-    if (key === 'ENTER') handleKeyPress('ENTER');
-    if (key === 'BACKSPACE') handleKeyPress('BACKSPACE');
-    if (key.match(/^[A-Z]$/)) handleKeyPress(key);
-});
-
-const keyboardKeys = document.querySelectorAll('.key');
-keyboardKeys.forEach(key => {
-    key.addEventListener('click', () => {
-        const keyValue = key.getAttribute('data-key').toUpperCase();
-        handleKeyPress(keyValue);
+function setupKeyboardEvents() {
+    document.addEventListener('keydown', (e) => {
+        let key = e.key.toUpperCase();
+        if (key === 'ENTER') handleKeyPress('ENTER');
+        if (key === 'BACKSPACE') handleKeyPress('BACKSPACE');
+        if (key.match(/^[A-Z]$/)) handleKeyPress(key);
     });
-});
+
+    const keyboardKeys = document.querySelectorAll('.key');
+    keyboardKeys.forEach(key => {
+        key.addEventListener('click', () => {
+            const keyValue = key.getAttribute('data-key').toUpperCase();
+            handleKeyPress(keyValue);
+        });
+    });
+}
+
+// 🏁 Force execution to wait until the browser layout engine is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}
