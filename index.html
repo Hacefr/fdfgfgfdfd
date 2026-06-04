@@ -9,19 +9,19 @@
 <body>
     <!-- MAIN MENU LAYER -->
     <div id="main-menu" class="menu-container">
-        <h1 class="menu-title">MORDLE</h1>
+        <h1 class="menu-title">CORDLE</h1>
         <p class="menu-subtitle">The Modded Wordle Clone</p>
         
         <div class="menu-buttons">
             <button class="menu-btn" id="btn-daily">Play Daily</button>
             <button class="menu-btn" id="btn-random">Play Random</button>
-            <button class="menu-btn" id="btn-modded">Play Modded</button>
+            <button class="menu-btn disabled" id="btn-modded">Play Modded <span class="badge">Locked</span></button>
             <button class="menu-btn" id="btn-stats">Stats</button>
             <button class="menu-btn" id="btn-settings">Settings</button>
         </div>
     </div>
 
-    <!-- STATS SCREEN -->
+    <!-- STATS MODAL/SCREEN -->
     <div id="stats-screen" class="menu-container hidden">
         <h2>YOUR STATISTICS</h2>
         <div class="stats-grid">
@@ -33,7 +33,7 @@
         <button class="menu-btn back-btn">Main Menu</button>
     </div>
 
-    <!-- SETTINGS SCREEN -->
+    <!-- SETTINGS MODAL/SCREEN -->
     <div id="settings-screen" class="menu-container hidden">
         <h2>SETTINGS</h2>
         <div class="setting-row">
@@ -49,15 +49,10 @@
         <button class="menu-btn back-btn">Main Menu</button>
     </div>
 
-    <!-- MODDED SELECTION SCREEN -->
+    <!-- MODDED PLACEHOLDER SCREEN -->
     <div id="modded-screen" class="menu-container hidden">
         <h2>MODDED MODES</h2>
-        <p class="menu-subtitle">Choose your modification style</p>
-        <div class="menu-buttons">
-            <button class="menu-btn mod-variant-btn" data-mod="speed">⚡ Speed-Run (15s Timer)</button>
-            <button class="menu-btn mod-variant-btn" data-mod="hp">💔 Hardcore (HP Mechanics)</button>
-            <button class="menu-btn mod-variant-btn" data-mod="mines">💥 Minefield (Rigged Keys)</button>
-        </div>
+        <p>Exciting custom rules and hazards coming soon!</p>
         <button class="menu-btn back-btn">Main Menu</button>
     </div>
 
@@ -69,19 +64,10 @@
             <div class="header-right"></div>
         </header>
 
-        <!-- Dynamic Game Mod Info Overlays -->
-        <div id="mod-status-bar" class="hidden">
-            <div id="timer-display" class="hidden">Time Left: <span id="timer-sec">15</span>s</div>
-            <div id="hp-display" class="hidden">
-                HP: <span id="hp-val">100</span>/100
-                <div class="hp-bar-container"><div id="hp-bar-fill"></div></div>
-            </div>
-            <div id="mines-display" class="hidden">⚠️ 2 Mines Hidden on Keyboard!</div>
-        </div>
-
         <div id="board-container"></div>
 
         <div id="keyboard-container">
+            <!-- Row 1 -->
             <div class="keyboard-row">
                 <button class="key" data-key="q">Q</button>
                 <button class="key" data-key="w">W</button>
@@ -94,6 +80,7 @@
                 <button class="key" data-key="o">O</button>
                 <button class="key" data-key="p">P</button>
             </div>
+            <!-- Row 2 -->
             <div class="keyboard-row">
                 <button class="key" data-key="a">A</button>
                 <button class="key" data-key="s">S</button>
@@ -105,6 +92,7 @@
                 <button class="key" data-key="k">K</button>
                 <button class="key" data-key="l">L</button>
             </div>
+            <!-- Row 3 -->
             <div class="keyboard-row">
                 <button class="key key-wide" data-key="Enter">ENTER</button>
                 <button class="key" data-key="z">Z</button>
@@ -119,6 +107,9 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Modular Script Architecture Elements -->
+    <script type="module" src="words.js"></script>
+    <script type="module" src="stats.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
