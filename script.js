@@ -36,7 +36,6 @@ function showToast(message, type = 'normal') {
     
     toastContainer.appendChild(toast);
     
-    // Remove element completely once CSS animation finishes
     setTimeout(() => {
         toast.remove();
     }, 2500);
