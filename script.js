@@ -1,13 +1,12 @@
 import { fetchWordList, getTargetWord, isValidWord, wordList } from './words.js';
 import { loadStats, saveStats, resetStats } from './stats.js';
+import { currentConfig, selectGameMode } from './gamemodes.js';
 
 const WORD_LENGTH = 5;
-const MAX_GUESSES = 6;
 let targetWord = '';
 let currentGuess = [];
-let guessesRemaining = MAX_GUESSES;
+let guessesRemaining = 6;
 let isGameOver = false;
-let gameMode = 'random'; 
 
 // DOM Screen Elements
 const screenMenu = document.getElementById('main-menu');
@@ -49,11 +48,17 @@ function showScreen(screenToShow) {
 }
 
 function setupMenuEvents() {
+    // Standard Modes
     document.getElementById('btn-random')?.addEventListener('click', () => startNewGame('random'));
     document.getElementById('btn-daily')?.addEventListener('click', () => startNewGame('daily'));
+    
+    // Modded Screen and Sub-Modes Menu Hooks
+    document.getElementById('btn-modded')?.addEventListener('click', () => showScreen(screenModded));
+    document.getElementById('btn-mod-hardcore')?.addEventListener('click', () => startNewGame('hardcore'));
+    document.getElementById('btn-mod-suddendeath')?.addEventListener('click', () => startNewGame('sudden-death'));
+    
     document.getElementById('btn-stats')?.addEventListener('click', () => showScreen(screenStats));
     document.getElementById('btn-settings')?.addEventListener('click', () => showScreen(screenSettings));
-    document.getElementById('btn-modded')?.addEventListener('click', () => showScreen(screenModded));
     
     document.querySelectorAll('.back-btn').forEach(btn => {
         btn.addEventListener('click', () => showScreen(screenMenu));
@@ -74,22 +79,21 @@ function startNewGame(mode) {
         return;
     }
     
-    gameMode = mode;
+    // Apply configurations from gamemodes module
+    selectGameMode(mode);
     isGameOver = false;
-    guessesRemaining = MAX_GUESSES;
+    guessesRemaining = currentConfig.maxGuesses;
     currentGuess = [];
     
     document.querySelectorAll('.key').forEach(k => {
         k.classList.remove('correct', 'present', 'absent');
     });
 
-    if (mode === 'daily') {
-        if (gameModeTitle) gameModeTitle.textContent = "DAILY MORDLE";
-    } else {
-        if (gameModeTitle) gameModeTitle.textContent = "RANDOM MORDLE";
+    if (gameModeTitle) {
+        gameModeTitle.textContent = currentConfig.displayName;
     }
 
-    targetWord = getTargetWord(mode);
+    targetWord = getTargetWord(currentConfig.modeName);
     console.log('Target Word:', targetWord); 
     initBoard();
     showScreen(screenGame);
@@ -98,7 +102,7 @@ function startNewGame(mode) {
 function initBoard() {
     if (!boardContainer) return;
     boardContainer.innerHTML = '';
-    for (let i = 0; i < MAX_GUESSES; i++) {
+    for (let i = 0; i < currentConfig.maxGuesses; i++) {
         const row = document.createElement('div');
         row.className = 'row';
         for (let j = 0; j < WORD_LENGTH; j++) {
@@ -112,7 +116,7 @@ function initBoard() {
 
 function updateGrid() {
     const rows = document.getElementsByClassName('row');
-    const activeRow = rows[MAX_GUESSES - guessesRemaining];
+    const activeRow = rows[currentConfig.maxGuesses - guessesRemaining];
     if (!activeRow) return;
     const tiles = activeRow.getElementsByClassName('tile');
     
@@ -140,7 +144,7 @@ function checkGuess() {
     }
 
     const rows = document.getElementsByClassName('row');
-    const activeRow = rows[MAX_GUESSES - guessesRemaining];
+    const activeRow = rows[currentConfig.maxGuesses - guessesRemaining];
     if (!activeRow) return;
     const tiles = activeRow.getElementsByClassName('tile');
     let targetWordArr = targetWord.split('');
