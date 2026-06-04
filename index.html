@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- IN-SITE NOTIFICATION BANNER CONTAINER -->
+    <div id="toast-container"></div>
+
     <!-- MAIN MENU LAYER -->
     <div id="main-menu" class="menu-container">
         <h1 class="menu-title">MORDLE</h1>
@@ -36,13 +39,7 @@
     <!-- SETTINGS MODAL/SCREEN -->
     <div id="settings-screen" class="menu-container hidden">
         <h2>SETTINGS</h2>
-        <div class="setting-row">
-            <label for="theme-select">Visual Theme:</label>
-            <select id="theme-select">
-                <option value="classic">Classic Dark</option>
-                <option value="cyberpunk">Cyberpunk Neon</option>
-            </select>
-        </div>
+        <p style="color: #818384; margin-bottom: 20px;">Manage your local gameplay preferences below.</p>
         <div class="setting-row">
             <button id="btn-reset-data" class="danger-btn">Reset All Stats</button>
         </div>
